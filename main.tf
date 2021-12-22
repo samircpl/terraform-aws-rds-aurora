@@ -130,6 +130,8 @@ resource "aws_rds_cluster" "this" {
       # See docs here https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_global_cluster#new-global-cluster-from-existing-db-cluster
       global_cluster_identifier,
     ]
+    # In some setups we'd like to be a little more careful and prevent beginner mistakes
+    prevent_destroy = var.prevent_destroy
   }
 
   tags = merge(var.tags, var.cluster_tags)
@@ -162,6 +164,14 @@ resource "aws_rds_cluster_instance" "this" {
   performance_insights_retention_period = lookup(each.value, "performance_insights_retention_period", var.performance_insights_retention_period)
   copy_tags_to_snapshot                 = lookup(each.value, "copy_tags_to_snapshot", var.copy_tags_to_snapshot)
   ca_cert_identifier                    = var.ca_cert_identifier
+  
+  lifecycle {
+    # In some setups we'd like to be a little more careful and prevent beginner mistakes
+    # var.destroy_instances_override is in place if you'd like to protect the cluster but still be able to replace an instance or scale down the cluster.
+    # Defaults are backwards compatible and flags enable the behavior.
+    prevent_destroy = var.prevent_destroy && !var.destroy_instances_override ? true : false 
+    # var.prevent_destroy
+  }
 
   timeouts {
     create = lookup(var.instance_timeouts, "create", null)
