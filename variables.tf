@@ -511,7 +511,7 @@ variable "prevent_destroy" {
 }
 
 variable "destroy_instances_override" {
-  # prevent_destroy = false + destroy_instances_override = true => scale downs possible.
+  # prevent_destroy = false + destroy_instances_override = true => scale downs possible. #TODO: Revisit this and don't get fancy. KISS
   # prevent_destroy = true => Clusters or Instances won't be destroyed.
   description = "See prevent_destroy. At the same time we'd like to provide an override for admins to still be able to change cluster size or rotate instances"
   type        = bool
