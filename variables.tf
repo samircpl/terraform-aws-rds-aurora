@@ -503,3 +503,17 @@ variable "security_group_egress_rules" {
   type        = map(any)
   default     = {}
 }
+
+variable "prevent_destroy" {
+  description = "In some setups/orgs we'd like to be a little more careful and prevent beginner mistakes"
+  type        = bool
+  default     = false
+}
+
+variable "destroy_instances_override" {
+  # prevent_destroy = false + destroy_instances_override = true => scale downs possible. #TODO: Revisit this and don't get fancy. KISS
+  # prevent_destroy = true => Clusters or Instances won't be destroyed.
+  description = "See prevent_destroy. At the same time we'd like to provide an override for admins to still be able to change cluster size or rotate instances"
+  type        = bool
+  default     = false
+}
